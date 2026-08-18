@@ -1,0 +1,86 @@
+/* =====================================================================
+   SUNRISE DENTAL CLINIC - COLOMBO
+   Dedicated Print & PDF Export Stylesheet for Receipts & Invoices
+   ===================================================================== */
+
+@media print {
+    /* 1. Hide all navigation, sidebars, topbars, buttons and system footers */
+    .app-sidebar,
+    .app-topbar,
+    .top-bar,
+    .no-print,
+    .btn,
+    .modal-overlay,
+    .app-footer,
+    .alert {
+        display: none !important;
+    }
+
+    /* 2. Page reset for clean PDF printing */
+    @page {
+        size: A4 portrait;
+        margin: 15mm 15mm 15mm 15mm;
+    }
+
+    html, body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .app-layout,
+    .app-container,
+    .app-main,
+    .content-body {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* 3. Invoice Container Print Formatting */
+    .invoice-container {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .invoice-header {
+        border-bottom: 2px solid #0f172a !important;
+        padding-bottom: 15px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .patient-doc-grid {
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 12px 16px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .data-table th {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        border-bottom: 2px solid #cbd5e1 !important;
+    }
+
+    .data-table td {
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    .summary-table tr.total-row td {
+        border-top: 2px solid #0f172a !important;
+        border-bottom: 2px solid #0f172a !important;
+        font-weight: 800 !important;
+    }
+}
