@@ -104,7 +104,7 @@ public class AppointmentServlet extends HttpServlet {
 
             String result = appointmentService.bookAppointment(appt);
             if ("SUCCESS".equals(result)) {
-                resp.sendRedirect(req.getContextPath() + "/appointments/view?id=" + appt.getAppointmentId() + "&success=Appointment+scheduled+successfully.+Appointment+No:+" + appt.getAppointmentNumber());
+                resp.sendRedirect(req.getContextPath() + "/appointments/view?id=" + appt.getAppointmentId() + "&success=Appointment+scheduled+successfully.+Email+confirmation+queued.+Appointment+No:+" + appt.getAppointmentNumber());
             } else {
                 req.setAttribute("errorMessage", result);
                 prepareBookingForm(req, resp);

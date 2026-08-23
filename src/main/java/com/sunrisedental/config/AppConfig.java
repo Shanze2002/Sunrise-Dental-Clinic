@@ -21,6 +21,16 @@ public class AppConfig {
     public static final String SESSION_FLASH_SUCCESS = "flashSuccess";
     public static final String SESSION_FLASH_ERROR = "flashError";
 
+    // Persistent cookies (remember-me, theme, last module, consent)
+    public static final String COOKIE_USERNAME = "sdc_username";
+    public static final String COOKIE_ROLE = "sdc_role";
+    public static final String COOKIE_THEME = "sdc_theme";
+    public static final String COOKIE_LAST_MODULE = "sdc_last_module";
+    public static final String COOKIE_CONSENT = "sdc_cookie_consent";
+    public static final String REQUEST_UI_THEME = "uiTheme";
+    public static final int COOKIE_REMEMBER_SECONDS = 30 * 24 * 60 * 60;
+    public static final int COOKIE_PREFERENCE_SECONDS = 90 * 24 * 60 * 60;
+
     // Tax & Default settings
     public static final double DEFAULT_TAX_RATE = 0.00;
     public static final double DEFAULT_TAX_PERCENTAGE = 0.00;

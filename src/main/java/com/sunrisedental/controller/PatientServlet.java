@@ -106,7 +106,7 @@ public class PatientServlet extends HttpServlet {
 
         boolean success = patientService.registerPatient(p);
         if (success) {
-            resp.sendRedirect(req.getContextPath() + "/patients?success=Patient+registered+successfully");
+            resp.sendRedirect(req.getContextPath() + "/patients?success=Patient+registered.+Welcome+email+sent+to+" + java.net.URLEncoder.encode(p.getEmail(), java.nio.charset.StandardCharsets.UTF_8));
         } else {
             req.setAttribute("errorMessage", "Failed to register patient. Please check required fields.");
             req.setAttribute("patient", p);

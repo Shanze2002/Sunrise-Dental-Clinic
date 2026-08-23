@@ -19,7 +19,7 @@ public class BillDAO {
 
     private static final String BASE_SELECT = 
         "SELECT b.*, " +
-        "p.patient_code, p.full_name AS patient_name, p.phone AS patient_phone, p.address AS patient_address, " +
+        "p.patient_code, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email, p.address AS patient_address, " +
         "u.full_name AS doctor_name, t.treatment_name, a.appointment_number " +
         "FROM bills b " +
         "JOIN appointments a ON b.appointment_id = a.appointment_id " +
@@ -239,6 +239,7 @@ public class BillDAO {
         b.setPatientCode(rs.getString("patient_code"));
         b.setPatientName(rs.getString("patient_name"));
         b.setPatientPhone(rs.getString("patient_phone"));
+        b.setPatientEmail(rs.getString("patient_email"));
         b.setPatientAddress(rs.getString("patient_address"));
         b.setDoctorName(rs.getString("doctor_name"));
         b.setTreatmentName(rs.getString("treatment_name"));

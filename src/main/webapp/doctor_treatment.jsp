@@ -24,7 +24,7 @@
         <jsp:include page="alerts.jsp" />
 
         <div style="margin-bottom: 20px;">
-            <a href="<%= request.getContextPath() %>/doctor_schedule.jsp" class="btn btn-outline btn-sm">
+            <a href="<%= request.getContextPath() %>/doctor/schedule" class="btn btn-outline btn-sm">
                 ← Back to Doctor Schedule
             </a>
         </div>
@@ -97,7 +97,7 @@
                         </div>
 
                         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                            <a href="<%= request.getContextPath() %>/doctor_schedule.jsp" class="btn btn-outline">Cancel</a>
+                            <a href="<%= request.getContextPath() %>/doctor/schedule" class="btn btn-outline">Cancel</a>
                             <button type="submit" class="btn btn-primary">
                                 Save Clinical Record & Update Status ➔
                             </button>

@@ -40,6 +40,7 @@ public class Bill implements Serializable {
     private String patientName;
     private String patientCode;
     private String patientPhone;
+    private String patientEmail;
     private String patientAddress;
     private String doctorName;
     private String treatmentName;
@@ -222,6 +223,14 @@ public class Bill implements Serializable {
 
     public void setPatientPhone(String patientPhone) {
         this.patientPhone = patientPhone;
+    }
+
+    public String getPatientEmail() {
+        return patientEmail;
+    }
+
+    public void setPatientEmail(String patientEmail) {
+        this.patientEmail = patientEmail;
     }
 
     public String getPatientAddress() {

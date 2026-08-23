@@ -1,18 +1,22 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.sunrisedental.config.AppConfig" %>
+<%@ page import="jakarta.servlet.http.Cookie" %>
 <%
     String errorMsg = (String) request.getAttribute("errorMessage");
     if (errorMsg == null) errorMsg = request.getParameter("error");
     String msg = request.getParameter("msg");
-    String savedUser = "";
+    String savedUser = (String) request.getAttribute("rememberedUsername");
+    if (savedUser == null) savedUser = "";
     Cookie[] cookies = request.getCookies();
     if (cookies != null) {
         for (Cookie c : cookies) {
-            if ("sdc_username".equals(c.getName())) {
+            if (AppConfig.COOKIE_USERNAME.equals(c.getName()) && (savedUser == null || savedUser.isEmpty())) {
                 savedUser = c.getValue();
             }
         }
     }
+    String uiTheme = (String) request.getAttribute(AppConfig.REQUEST_UI_THEME);
+    if (uiTheme == null) uiTheme = "light";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +27,7 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/main.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/auth.css">
 </head>
-<body class="auth-wrapper">
+<body class="auth-wrapper theme-<%= uiTheme %>">
     <div class="auth-card">
         <div class="auth-header">
             <div class="auth-logo">🦷</div>
@@ -96,6 +100,19 @@
             <p style="margin-top: 4px;">Hotline: <%= AppConfig.CLINIC_PHONE %></p>
         </div>
     </div>
+
+    <div id="cookieConsentBanner" class="cookie-banner" hidden>
+        <div>
+            <strong>Cookie notice.</strong>
+            Remember-me stores your username in a cookie. Session cookies keep staff signed in.
+        </div>
+        <button type="button" class="btn-login" id="acceptCookiesBtn" style="width:auto;padding:8px 14px;margin:0;">Accept</button>
+    </div>
+    <script>
+        window.SDC_COOKIE_THEME = "<%= AppConfig.COOKIE_THEME %>";
+        window.SDC_COOKIE_CONSENT = "<%= AppConfig.COOKIE_CONSENT %>";
+    </script>
+    <script src="<%= request.getContextPath() %>/assets/js/main.js"></script>
 </body>
 </html>
 

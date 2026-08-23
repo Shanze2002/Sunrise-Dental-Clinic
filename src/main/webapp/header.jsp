@@ -9,6 +9,8 @@
         pageTitle = pageTitle + " | " + AppConfig.CLINIC_NAME;
     }
     User loggedInUser = (User) session.getAttribute(AppConfig.SESSION_USER);
+    String uiTheme = (String) request.getAttribute(AppConfig.REQUEST_UI_THEME);
+    if (uiTheme == null || uiTheme.trim().isEmpty()) uiTheme = "light";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,5 +24,5 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="theme-<%= uiTheme %>">
 <div class="app-layout">

@@ -2,6 +2,8 @@ package com.sunrisedental.service;
 
 import com.sunrisedental.dao.PatientDAO;
 import com.sunrisedental.model.Patient;
+import com.sunrisedental.service.notification.NotificationComposer;
+import com.sunrisedental.service.notification.NotificationService;
 import com.sunrisedental.util.ValidationUtil;
 
 import java.util.List;
@@ -34,10 +36,15 @@ public class PatientService {
         if (patient == null) return false;
         if (!ValidationUtil.isNotEmpty(patient.getFullName())) return false;
         if (!ValidationUtil.isNotEmpty(patient.getPhone())) return false;
+        if (!ValidationUtil.isValidEmail(patient.getEmail())) return false;
         if (!ValidationUtil.isNotEmpty(patient.getAddress())) return false;
         if (patient.getDob() == null) return false;
 
-        return patientDAO.create(patient);
+        boolean saved = patientDAO.create(patient);
+        if (saved) {
+            NotificationService.getInstance().publish(NotificationComposer.patientRegistered(patient));
+        }
+        return saved;
     }
 
     public boolean updatePatient(Patient patient) {

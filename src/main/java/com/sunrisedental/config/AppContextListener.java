@@ -1,5 +1,7 @@
 package com.sunrisedental.config;
 
+import com.sunrisedental.service.notification.EmailNotificationObserver;
+import com.sunrisedental.service.notification.NotificationService;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -26,6 +28,9 @@ public class AppContextListener implements ServletContextListener {
         } catch (Exception e) {
             LOGGER.warning("Database startup check note: " + e.getMessage());
         }
+
+        NotificationService.getInstance().register(new EmailNotificationObserver());
+        LOGGER.info("Email notification observer registered (Observer Pattern)");
     }
 
     @Override

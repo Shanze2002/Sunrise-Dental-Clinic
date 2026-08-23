@@ -38,6 +38,7 @@ public class Appointment implements Serializable {
     private String patientName;
     private String patientCode;
     private String patientPhone;
+    private String patientEmail;
     private String patientGender;
     private String patientAddress;
     private String doctorName;
@@ -204,6 +205,14 @@ public class Appointment implements Serializable {
 
     public void setPatientPhone(String patientPhone) {
         this.patientPhone = patientPhone;
+    }
+
+    public String getPatientEmail() {
+        return patientEmail;
+    }
+
+    public void setPatientEmail(String patientEmail) {
+        this.patientEmail = patientEmail;
     }
 
     public String getPatientGender() {

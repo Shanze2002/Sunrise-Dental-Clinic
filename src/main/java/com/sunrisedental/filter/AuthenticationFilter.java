@@ -35,7 +35,7 @@ public class AuthenticationFilter implements Filter {
 
         // Allow static assets, login page, auth endpoints, and help
         boolean isStaticAsset = path.startsWith("/assets/") || path.endsWith(".css") || path.endsWith(".js") || path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".ico");
-        boolean isAuthEndpoint = path.startsWith("/auth/") || path.equals("/index.jsp") || path.equals("/");
+        boolean isAuthEndpoint = path.startsWith("/auth/") || path.equals("/index.jsp") || path.equals("/") || path.equals("/login.jsp");
         boolean isHelpEndpoint = path.startsWith("/help");
 
         if (isStaticAsset || isAuthEndpoint || isHelpEndpoint) {

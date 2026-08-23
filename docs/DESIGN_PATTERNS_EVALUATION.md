@@ -83,8 +83,9 @@ The system is partitioned into three distinct, loosely coupled layers:
 | **Factory Pattern** | Creational | `ServiceFactory.java`, `DiscountStrategyFactory.java` | Decouples caller from concrete object instantiation |
 | **Strategy Pattern** | Behavioral | `DiscountStrategy.java`, `SeniorCitizenDiscountStrategy.java`, etc. | Encapsulates interchangeable discount calculation algorithms |
 | **Data Access Object (DAO)** | Structural / Data | `UserDAO.java`, `PatientDAO.java`, `AppointmentDAO.java`, etc. | Isolates persistence mechanism from business logic |
-| **Intercepting Filter** | Architectural / Security | `AuthenticationFilter.java`, `RoleFilter.java` | Pre-processes incoming HTTP requests for authentication & RBAC |
+| **Intercepting Filter** | Architectural / Security | `AuthenticationFilter.java`, `RoleFilter.java`, `CookiePreferenceFilter.java` | Pre-processes incoming HTTP requests for authentication, RBAC, and cookie preferences |
 | **Data Transfer Object (DTO)** | Structural | `User.java`, `Patient.java`, `Appointment.java`, `Bill.java`, `MonthlyReportDTO.java` | Carries structured data across application tiers with zero logic |
+| **Observer Pattern** | Behavioral | `NotificationService.java`, `NotificationObserver.java`, `EmailNotificationObserver.java` | Decouples appointment/billing events from email delivery |
 
 ---
 
@@ -160,16 +161,32 @@ The system is partitioned into three distinct, loosely coupled layers:
 - **Implementation in Code:**
   - `AuthenticationFilter`: Ensures unauthenticated requests are redirected to `/auth/login`.
   - `RoleFilter`: Restricts role-specific URLs (e.g., `/admin/*`, `/doctor/*`, `/billing/*`) based on user permissions.
+  - `CookiePreferenceFilter`: Applies the theme cookie to the request and records the last visited module cookie.
 - **Critical Evaluation & Impact:**
   - *Strengths:* Centralizes security enforcement in one place rather than repeating authentication checks in every individual servlet.
   - *Trade-offs:* Filter execution order must be correctly declared in `web.xml` / `@WebFilter`.
 
 ---
 
+### 2.7 Observer Pattern (Email Notifications)
+- **Description:** Defines a one-to-many dependency so that when a clinic business event occurs, all registered observers are notified automatically without the publisher knowing the delivery channel.
+- **Implementation in Code:**
+  - Subject (Singleton): `NotificationService`
+  - Observer interface: `NotificationObserver`
+  - Concrete observer: `EmailNotificationObserver`
+  - Event DTO: `NotificationEvent` / `NotificationComposer`
+  - Persistence: `email_outbox` table via `EmailNotificationDAO`
+- **Application in the system:** `AppointmentService` publishes booking and cancellation events; `BillingService` publishes invoice and payment events. The email observer writes a patient-facing message to the outbox (visible at `/notifications/email`) and logs it on the server.
+- **Critical Evaluation & Impact:**
+  - *Strengths:* Open/Closed Principle — an SMS observer could be added later without editing appointment or billing logic. Email failures cannot roll back a successful booking because notification is a side-effect after persistence.
+  - *Trade-offs:* Eventual consistency: the clinical record is saved first, then the email is queued. That is preferable in a clinic (never lose a booking because SMTP is down) but means staff should check the Email Outbox for undelivered messages.
+
+---
+
 ## 3. Advanced Database Features & Implementation
 
 ### 3.1 Relational Integrity & Schema Design
-- Normalized tables (`roles`, `users`, `doctors`, `patients`, `treatments`, `appointments`, `bills`, `payments`, `audit_logs`).
+- Normalized tables (`roles`, `users`, `doctors`, `patients`, `treatments`, `appointments`, `bills`, `payments`, `audit_logs`, `email_outbox`).
 - Foreign keys with referential actions (`ON DELETE RESTRICT`, `ON DELETE CASCADE`, `ON DELETE SET NULL`).
 - Composite Indexes on frequently queried search criteria (e.g., `(appointment_date, doctor_id, appointment_time)`, `phone`, `nic_passport`).
 
@@ -201,11 +218,16 @@ To support distributed healthcare systems, front-end AJAX interactions, and thir
 
 ## 5. Security & Session Management Evaluation
 - **Authentication:** Password hashing using **SHA-256 with random cryptographic salts** (`PasswordUtil`).
-- **Session Security:** Sessions configured with `30 minutes` idle timeout and `HttpOnly` cookie flags to prevent Cross-Site Scripting (XSS) session hijacking.
+- **Session Security:** Sessions configured with `30 minutes` idle timeout and `HttpOnly` cookie flags to prevent Cross-Site Scripting (XSS) session hijacking. Session tracking mode is `COOKIE` in `web.xml`.
+- **Persistent cookies (`CookieUtil`):**
+  - `sdc_username` / `sdc_role` — Remember-me (username only; never the password; HttpOnly; SameSite=Lax; 30 days).
+  - `sdc_theme` — UI light/dark preference (90 days).
+  - `sdc_last_module` — last visited servlet path, applied by `CookiePreferenceFilter`.
+  - `sdc_cookie_consent` — records that the staff member accepted the cookie notice.
 - **SQL Injection Defense:** Strict use of JDBC `PreparedStatement` with typed binding across all DAO operations.
 - **Role-Based Access Control (RBAC):** Strict 4-tier privilege separation (Admin, Receptionist, Doctor, Cashier).
 
 ---
 
 ## 6. Summary & Academic Conclusion
-The Sunrise Dental Clinic Management System demonstrates an exemplary implementation of modern enterprise Java standards. By leveraging 3-tier architecture, MVC, Singleton, Factory, Strategy, DAO, and Intercepting Filter patterns alongside advanced MySQL database procedures and triggers, the system satisfies all learning outcomes (LO II) with technical rigor, robustness, and visual elegance.
+The Sunrise Dental Clinic Management System demonstrates an exemplary implementation of modern enterprise Java standards. By leveraging 3-tier architecture, MVC, Singleton, Factory, Strategy, DAO, Intercepting Filter, and Observer patterns — together with session cookies, preference cookies, and email alerts — the system satisfies all learning outcomes (LO II) with technical rigor, robustness, and visual elegance.

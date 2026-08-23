@@ -19,7 +19,7 @@ public class AppointmentDAO {
 
     private static final String BASE_SELECT = 
         "SELECT a.*, " +
-        "p.patient_code, p.full_name AS patient_name, p.phone AS patient_phone, p.gender AS patient_gender, p.address AS patient_address, " +
+        "p.patient_code, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email, p.gender AS patient_gender, p.address AS patient_address, " +
         "u.full_name AS doctor_name, d.specialization AS doctor_specialization, d.room_number AS doctor_room, d.consultation_fee, " +
         "t.treatment_name, t.treatment_code, t.standard_cost AS treatment_cost, " +
         "b.bill_id, b.invoice_number, b.payment_status AS billing_status " +
@@ -357,6 +357,7 @@ public class AppointmentDAO {
         a.setPatientCode(rs.getString("patient_code"));
         a.setPatientName(rs.getString("patient_name"));
         a.setPatientPhone(rs.getString("patient_phone"));
+        a.setPatientEmail(rs.getString("patient_email"));
         a.setPatientGender(rs.getString("patient_gender"));
         a.setPatientAddress(rs.getString("patient_address"));
         a.setDoctorName(rs.getString("doctor_name"));

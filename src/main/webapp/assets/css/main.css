@@ -907,3 +907,35 @@ textarea.form-control {
     font-size: 0.78rem;
     color: var(--text-muted);
 }
+
+.cookie-banner {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    z-index: 80;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary-900);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    font-size: 0.85rem;
+}
+
+.cookie-banner[hidden] {
+    display: none !important;
+}
+
+body.theme-dark {
+    --bg-main: #0b1220;
+    --bg-surface: #111827;
+    --bg-subtle: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+}

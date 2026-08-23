@@ -2,6 +2,8 @@ package com.sunrisedental.service;
 
 import com.sunrisedental.dao.AppointmentDAO;
 import com.sunrisedental.model.Appointment;
+import com.sunrisedental.service.notification.NotificationComposer;
+import com.sunrisedental.service.notification.NotificationService;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -62,6 +64,10 @@ public class AppointmentService {
 
         boolean saved = appointmentDAO.create(appointment);
         if (saved) {
+            Appointment persisted = appointmentDAO.findById(appointment.getAppointmentId());
+            if (persisted != null) {
+                NotificationService.getInstance().publish(NotificationComposer.appointmentBooked(persisted));
+            }
             return "SUCCESS";
         } else {
             return "Failed to save appointment. Please try again.";
@@ -73,7 +79,13 @@ public class AppointmentService {
     }
 
     public boolean cancelAppointment(int appointmentId) {
-        return updateStatus(appointmentId, Appointment.STATUS_CANCELLED);
+        Appointment existing = appointmentDAO.findById(appointmentId);
+        boolean cancelled = updateStatus(appointmentId, Appointment.STATUS_CANCELLED);
+        if (cancelled && existing != null) {
+            existing.setStatus(Appointment.STATUS_CANCELLED);
+            NotificationService.getInstance().publish(NotificationComposer.appointmentCancelled(existing));
+        }
+        return cancelled;
     }
 
     public boolean updateClinicalRecord(int appointmentId, String status, String toothNumbers, String clinicalNotes, String prescription) {

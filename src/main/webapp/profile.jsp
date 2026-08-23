@@ -1,6 +1,7 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.sunrisedental.model.User" %>
 <%@ page import="com.sunrisedental.config.AppConfig" %>
+<%@ page import="jakarta.servlet.http.Cookie" %>
 
 <%
     User logged = (User) session.getAttribute(AppConfig.SESSION_USER);
@@ -48,6 +49,29 @@
                     </div>
 
                     <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+                    <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--primary-900);">
+                        🍪 Cookie Preferences
+                    </h4>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+                        Theme and last-module cookies are stored in your browser. Remember-me stores your username only (not the password).
+                    </p>
+                    <p style="font-size: 0.85rem; margin-bottom: 12px;">
+                        Last module cookie:
+                        <strong>
+                            <%
+                                String lastModule = null;
+                                Cookie[] prefCookies = request.getCookies();
+                                if (prefCookies != null) {
+                                    for (Cookie c : prefCookies) {
+                                        if (AppConfig.COOKIE_LAST_MODULE.equals(c.getName())) lastModule = c.getValue();
+                                    }
+                                }
+                            %>
+                            <%= lastModule != null ? lastModule : "Not set yet" %>
+                        </strong>
+                    </p>
+                    <button type="button" class="btn btn-outline btn-sm js-theme-toggle">Toggle Light / Dark Theme</button>
 
                     <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; color: var(--primary-900);">
                         🔑 Change My Password

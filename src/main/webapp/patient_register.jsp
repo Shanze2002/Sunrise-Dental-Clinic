@@ -58,9 +58,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="email">Email Address</label>
+                            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
                             <input type="email" id="email" name="email" class="form-control" 
-                                   placeholder="patient@example.com" 
+                                   placeholder="patient@example.com" required
                                    value="<%= patient.getEmail() != null ? patient.getEmail() : "" %>">
                         </div>
 

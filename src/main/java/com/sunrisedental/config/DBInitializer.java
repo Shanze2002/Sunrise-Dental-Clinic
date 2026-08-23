@@ -36,10 +36,25 @@ public class DBInitializer {
                 LOGGER.info("Database schema already exists. Verifying required records...");
                 seedDefaultUsersIfMissing(stmt);
             }
+            ensureEmailOutboxTable(stmt);
 
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "Automatic database initialization encountered an issue (MySQL may need manual schema run): " + e.getMessage());
         }
+    }
+
+    private static void ensureEmailOutboxTable(Statement stmt) throws SQLException {
+        stmt.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS email_outbox (" +
+            "  email_id INT AUTO_INCREMENT PRIMARY KEY," +
+            "  recipient VARCHAR(150) NOT NULL," +
+            "  subject VARCHAR(255) NOT NULL," +
+            "  body TEXT," +
+            "  event_type VARCHAR(50) NOT NULL," +
+            "  delivery_status VARCHAR(30) DEFAULT 'QUEUED'," +
+            "  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+            ") ENGINE=InnoDB;"
+        );
     }
 
     private static void executeSchemaCreation(Statement stmt) throws SQLException {

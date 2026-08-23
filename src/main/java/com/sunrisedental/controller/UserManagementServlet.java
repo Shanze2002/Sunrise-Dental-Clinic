@@ -2,6 +2,8 @@ package com.sunrisedental.controller;
 
 import java.io.IOException;
 import java.util.List;
+import com.sunrisedental.config.AppConfig;
+import com.sunrisedental.model.Role;
 import com.sunrisedental.model.User;
 import com.sunrisedental.service.UserService;
 import com.sunrisedental.service.factory.ServiceFactory;
@@ -10,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "UserManagementServlet", urlPatterns = {
     "/admin/users", "/admin/users/create", "/admin/users/toggle", "/admin/users/reset-password"
@@ -77,10 +80,23 @@ public class UserManagementServlet extends HttpServlet {
         try {
             int uid = Integer.parseInt(req.getParameter("userId"));
             String newPass = req.getParameter("newPassword");
+
+            HttpSession session = req.getSession(false);
+            User logged = (session != null) ? (User) session.getAttribute(AppConfig.SESSION_USER) : null;
+            boolean isAdmin = logged != null && Role.ADMIN.equalsIgnoreCase(logged.getRoleName());
+            if (!isAdmin && (logged == null || logged.getUserId() != uid)) {
+                resp.sendRedirect(req.getContextPath() + "/dashboard?error=access_denied");
+                return;
+            }
+
             userService.resetPassword(uid, newPass);
-            resp.sendRedirect(req.getContextPath() + "/admin/users?success=Password+reset+successfully");
+            if (isAdmin && logged.getUserId() != uid) {
+                resp.sendRedirect(req.getContextPath() + "/admin/users?success=Password+reset+successfully");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/profile.jsp?success=Password+updated+successfully");
+            }
         } catch (Exception e) {
-            resp.sendRedirect(req.getContextPath() + "/admin/users?error=" + e.getMessage());
+            resp.sendRedirect(req.getContextPath() + "/profile.jsp?error=" + e.getMessage());
         }
     }
 }

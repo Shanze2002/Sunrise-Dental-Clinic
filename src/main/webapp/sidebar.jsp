@@ -29,101 +29,109 @@
 
     <nav class="sidebar-nav">
 
-        <%-- 1. ADMIN SECTION (Visible to ADMIN only) --%>
         <% if (isAdmin) { %>
             <div class="nav-section-title">ADMINISTRATION</div>
-            <a href="<%= request.getContextPath() %>/admin_dashboard.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/dashboard" class="nav-link">
                 <span class="nav-icon">⚙️</span>
                 <span>Admin Dashboard</span>
             </a>
-            <a href="<%= request.getContextPath() %>/admin_users.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/admin/users" class="nav-link">
                 <span class="nav-icon">👥</span>
                 <span>Staff Users</span>
             </a>
-            <a href="<%= request.getContextPath() %>/admin_doctors.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/admin/doctors" class="nav-link">
                 <span class="nav-icon">👨‍⚕️</span>
                 <span>Dentists & Rooms</span>
             </a>
-            <a href="<%= request.getContextPath() %>/admin_treatments.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/admin/treatments" class="nav-link">
                 <span class="nav-icon">💊</span>
                 <span>Treatments Catalog</span>
             </a>
-            <a href="<%= request.getContextPath() %>/admin_reports.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/admin/mail" class="nav-link">
+                <span class="nav-icon">📧</span>
+                <span>Email SMTP Setup</span>
+            </a>
+            <a href="<%= request.getContextPath() %>/reports/monthly" class="nav-link">
                 <span class="nav-icon">📈</span>
                 <span>Financial Reports</span>
             </a>
         <% } %>
 
-        <%-- 2. RECEPTION & PATIENTS SECTION (Visible to ADMIN and RECEPTIONIST) --%>
         <% if (isAdmin || isReceptionist) { %>
             <div class="nav-section-title">RECEPTION & PATIENTS</div>
+            <% if (isReceptionist) { %>
+            <a href="<%= request.getContextPath() %>/dashboard" class="nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Reception Desk</span>
+            </a>
+            <% } else { %>
             <a href="<%= request.getContextPath() %>/receptionist_dashboard.jsp" class="nav-link">
                 <span class="nav-icon">📊</span>
                 <span>Reception Desk</span>
             </a>
-            <a href="<%= request.getContextPath() %>/patient_register.jsp" class="nav-link">
+            <% } %>
+            <a href="<%= request.getContextPath() %>/patients/new" class="nav-link">
                 <span class="nav-icon">👤</span>
                 <span>New Patient Reg.</span>
             </a>
-            <a href="<%= request.getContextPath() %>/patient_list.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/patients" class="nav-link">
                 <span class="nav-icon">👥</span>
                 <span>Patients Directory</span>
             </a>
-            <a href="<%= request.getContextPath() %>/book_appointment.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/appointments/book" class="nav-link">
                 <span class="nav-icon">📅</span>
                 <span>Book Appointment</span>
             </a>
-            <a href="<%= request.getContextPath() %>/appointments_list.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/appointments" class="nav-link">
                 <span class="nav-icon">📋</span>
                 <span>Appointments List</span>
             </a>
-            <a href="<%= request.getContextPath() %>/search_appointment.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/appointments/search" class="nav-link">
                 <span class="nav-icon">🔍</span>
                 <span>Search Appointment</span>
             </a>
         <% } %>
 
-        <%-- 3. CLINICAL DENTISTRY SECTION (Visible to ADMIN and DOCTOR) --%>
         <% if (isAdmin || isDoctor) { %>
             <div class="nav-section-title">CLINICAL DENTISTRY</div>
-            <a href="<%= request.getContextPath() %>/doctor_schedule.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/<%= isDoctor ? "dashboard" : "doctor/schedule" %>" class="nav-link">
                 <span class="nav-icon">🩺</span>
                 <span>Doctor's Queue</span>
             </a>
-            <% if (isDoctor && !isAdmin) { %>
-                <a href="<%= request.getContextPath() %>/search_appointment.jsp" class="nav-link">
-                    <span class="nav-icon">🔍</span>
-                    <span>Search Clinical Visit</span>
-                </a>
-            <% } %>
+            <a href="<%= request.getContextPath() %>/appointments/search" class="nav-link">
+                <span class="nav-icon">🔍</span>
+                <span>Search Clinical Visit</span>
+            </a>
         <% } %>
 
-        <%-- 4. BILLING & CASHIER SECTION (Visible to ADMIN and CASHIER) --%>
         <% if (isAdmin || isCashier) { %>
             <div class="nav-section-title">BILLING & INVOICES</div>
-            <a href="<%= request.getContextPath() %>/cashier_billing.jsp" class="nav-link">
+            <a href="<%= request.getContextPath() %>/<%= isCashier ? "dashboard" : "billing/queue" %>" class="nav-link">
                 <span class="nav-icon">💳</span>
                 <span>Billing Desk</span>
             </a>
-            <% if (isCashier && !isAdmin) { %>
-                <a href="<%= request.getContextPath() %>/search_appointment.jsp" class="nav-link">
-                    <span class="nav-icon">🔍</span>
-                    <span>Search Invoices</span>
-                </a>
-            <% } %>
+            <a href="<%= request.getContextPath() %>/appointments/search" class="nav-link">
+                <span class="nav-icon">🔍</span>
+                <span>Search Invoices</span>
+            </a>
         <% } %>
 
-        <%-- 5. COMMON SYSTEM SECTION (Visible to all logged in users) --%>
         <div class="nav-section-title">SYSTEM</div>
         <a href="<%= request.getContextPath() %>/profile.jsp" class="nav-link">
             <span class="nav-icon">👤</span>
             <span>My Profile</span>
         </a>
+        <% if (isAdmin || isReceptionist) { %>
+        <a href="<%= request.getContextPath() %>/notifications/email" class="nav-link">
+            <span class="nav-icon">📧</span>
+            <span>Email Outbox</span>
+        </a>
+        <% } %>
         <a href="<%= request.getContextPath() %>/help.jsp" class="nav-link">
             <span class="nav-icon">❓</span>
             <span>User Guide / Help</span>
         </a>
-        <a href="<%= request.getContextPath() %>/login.jsp?msg=logged_out" class="nav-link text-danger">
+        <a href="<%= request.getContextPath() %>/auth/logout" class="nav-link text-danger">
             <span class="nav-icon">🚪</span>
             <span>Exit / Logout</span>
         </a>

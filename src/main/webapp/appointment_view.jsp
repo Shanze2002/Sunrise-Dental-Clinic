@@ -1,5 +1,6 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.sunrisedental.model.*" %>
+<%@ page import="com.sunrisedental.config.AppConfig" %>
 <%@ page import="com.sunrisedental.service.factory.ServiceFactory" %>
 <%@ page import="com.sunrisedental.util.DateUtil" %>
 
@@ -12,6 +13,14 @@
         } catch (Exception ignored) {}
     }
     request.setAttribute("pageTitle", (app != null ? "Appointment " + app.getAppointmentNumber() : "Appointment Details"));
+    User viewer = (User) session.getAttribute(AppConfig.SESSION_USER);
+    String viewerRole = (viewer != null && viewer.getRoleName() != null) ? viewer.getRoleName().toUpperCase() : "";
+    boolean canTreat = Role.ADMIN.equalsIgnoreCase(viewerRole) || Role.DOCTOR.equalsIgnoreCase(viewerRole);
+    boolean canBill = Role.ADMIN.equalsIgnoreCase(viewerRole) || Role.CASHIER.equalsIgnoreCase(viewerRole);
+    boolean canCancel = Role.ADMIN.equalsIgnoreCase(viewerRole) || Role.RECEPTIONIST.equalsIgnoreCase(viewerRole);
+    String backHref = Role.DOCTOR.equalsIgnoreCase(viewerRole) ? "/doctor/schedule"
+            : Role.CASHIER.equalsIgnoreCase(viewerRole) ? "/billing/queue"
+            : "/appointments";
 %>
 <jsp:include page="header.jsp" />
 <jsp:include page="sidebar.jsp" />
@@ -23,25 +32,29 @@
         <jsp:include page="alerts.jsp" />
 
         <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;" class="no-print">
-            <a href="<%= request.getContextPath() %>/appointments_list.jsp" class="btn btn-outline btn-sm">
-                ← Back to Appointments
+            <a href="<%= request.getContextPath() %><%= backHref %>" class="btn btn-outline btn-sm">
+                ← Back
             </a>
 
             <% if (app != null) { %>
                 <div style="display: flex; gap: 8px;">
-                    <a href="<%= request.getContextPath() %>/doctor_treatment.jsp?appointmentId=<%= app.getAppointmentId() %>" class="btn btn-primary">
+                    <% if (canTreat) { %>
+                    <a href="<%= request.getContextPath() %>/doctor/treatment?appointmentId=<%= app.getAppointmentId() %>" class="btn btn-primary">
                         🩺 Treat Patient
                     </a>
+                    <% } %>
+                    <% if (canBill) { %>
                     <% if (app.getBillId() != null && app.getBillId() > 0) { %>
-                        <a href="<%= request.getContextPath() %>/invoice_print.jsp?billId=<%= app.getBillId() %>" class="btn btn-navy">
+                        <a href="<%= request.getContextPath() %>/billing/invoice?billId=<%= app.getBillId() %>" class="btn btn-navy">
                             🧾 View Bill
                         </a>
                     <% } else { %>
-                        <a href="<%= request.getContextPath() %>/generate_bill.jsp?appointmentId=<%= app.getAppointmentId() %>" class="btn btn-navy">
+                        <a href="<%= request.getContextPath() %>/billing/generate?appointmentId=<%= app.getAppointmentId() %>" class="btn btn-navy">
                             💳 Generate Bill
                         </a>
                     <% } %>
-                    <% if (!"Cancelled".equalsIgnoreCase(app.getStatus()) && !"Completed".equalsIgnoreCase(app.getStatus())) { %>
+                    <% } %>
+                    <% if (canCancel && !"Cancelled".equalsIgnoreCase(app.getStatus()) && !"Completed".equalsIgnoreCase(app.getStatus())) { %>
                         <a href="<%= request.getContextPath() %>/appointments/cancel?id=<%= app.getAppointmentId() %>" 
                            class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this appointment?');">
                             Cancel Appointment

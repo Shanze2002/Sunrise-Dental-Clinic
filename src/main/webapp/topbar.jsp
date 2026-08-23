@@ -19,11 +19,15 @@
             Role: <strong><%= (topUser != null) ? topUser.getRoleName() : "Staff" %></strong>
         </div>
 
+        <button type="button" class="btn btn-outline btn-sm js-theme-toggle" title="Toggle theme (saved in cookie)">
+            🌓 Theme
+        </button>
+
         <a href="<%= request.getContextPath() %>/profile.jsp" class="btn btn-outline btn-sm">
             👤 Profile
         </a>
 
-        <a href="<%= request.getContextPath() %>/login.jsp?msg=logged_out" class="btn btn-danger btn-sm">
+        <a href="<%= request.getContextPath() %>/auth/logout" class="btn btn-danger btn-sm">
             🚪 Exit
         </a>
     </div>

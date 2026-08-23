@@ -8,6 +8,8 @@ import com.sunrisedental.model.Bill;
 import com.sunrisedental.model.Payment;
 import com.sunrisedental.service.strategy.DiscountStrategy;
 import com.sunrisedental.service.strategy.DiscountStrategyFactory;
+import com.sunrisedental.service.notification.NotificationComposer;
+import com.sunrisedental.service.notification.NotificationService;
 
 import java.util.List;
 
@@ -101,6 +103,15 @@ public class BillingService {
 
         boolean created = billDAO.create(b);
         if (created) {
+            Bill persisted = billDAO.findById(b.getBillId());
+            if (persisted != null) {
+                if (persisted.getBalanceAmount() > 0) {
+                    NotificationService.getInstance().publish(NotificationComposer.billRemainder(persisted));
+                } else {
+                    NotificationService.getInstance().publish(NotificationComposer.billGenerated(persisted));
+                }
+                return persisted;
+            }
             return b;
         }
         return null;
@@ -116,6 +127,13 @@ public class BillingService {
         boolean saved = paymentDAO.create(p);
         if (saved) {
             billDAO.updatePayment(billId, amount);
+            Bill updated = billDAO.findById(billId);
+            if (updated != null) {
+                NotificationService.getInstance().publish(NotificationComposer.paymentReceived(updated, p));
+                if (updated.getBalanceAmount() > 0) {
+                    NotificationService.getInstance().publish(NotificationComposer.billRemainder(updated));
+                }
+            }
             return true;
         }
         return false;
@@ -131,6 +149,13 @@ public class BillingService {
         boolean saved = paymentDAO.create(p);
         if (saved) {
             billDAO.updatePayment(billId, amount);
+            Bill updated = billDAO.findById(billId);
+            if (updated != null) {
+                NotificationService.getInstance().publish(NotificationComposer.paymentReceived(updated, p));
+                if (updated.getBalanceAmount() > 0) {
+                    NotificationService.getInstance().publish(NotificationComposer.billRemainder(updated));
+                }
+            }
             return p;
         }
         return null;

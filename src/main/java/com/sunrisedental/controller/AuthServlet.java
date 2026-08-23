@@ -5,9 +5,9 @@ import com.sunrisedental.config.AppConfig;
 import com.sunrisedental.model.User;
 import com.sunrisedental.service.UserService;
 import com.sunrisedental.service.factory.ServiceFactory;
+import com.sunrisedental.util.CookieUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +31,10 @@ public class AuthServlet extends HttpServlet {
             if (session != null && session.getAttribute(AppConfig.SESSION_USER) != null) {
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
                 return;
+            }
+            String rememberedUser = CookieUtil.getCookieValue(req, AppConfig.COOKIE_USERNAME);
+            if (rememberedUser != null) {
+                req.setAttribute("rememberedUsername", rememberedUser);
             }
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
         }
@@ -65,11 +69,9 @@ public class AuthServlet extends HttpServlet {
             session.setMaxInactiveInterval(AppConfig.SESSION_TIMEOUT_SECONDS);
 
             if ("true".equalsIgnoreCase(rememberMe)) {
-                Cookie cookie = new Cookie("sdc_username", user.getUsername());
-                cookie.setMaxAge(30 * 24 * 60 * 60);
-                cookie.setPath(req.getContextPath());
-                cookie.setHttpOnly(true);
-                resp.addCookie(cookie);
+                CookieUtil.applyRememberMeCookies(resp, user.getUsername(), user.getRoleName());
+            } else {
+                CookieUtil.clearAuthCookies(resp);
             }
 
             resp.sendRedirect(req.getContextPath() + "/dashboard");
@@ -84,6 +86,7 @@ public class AuthServlet extends HttpServlet {
         if (session != null) {
             session.invalidate();
         }
-        resp.sendRedirect(req.getContextPath() + "/login.jsp?msg=logged_out");
+        CookieUtil.clearAuthCookies(resp);
+        resp.sendRedirect(req.getContextPath() + "/auth/login?msg=logged_out");
     }
 }

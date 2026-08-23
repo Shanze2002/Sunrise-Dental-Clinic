@@ -96,7 +96,7 @@
                                 <tr>
                                     <td><strong>🕒 <%= DateUtil.formatDisplayTime(a.getAppointmentTime()) %></strong></td>
                                     <td>
-                                        <a href="<%= request.getContextPath() %>/doctor_treatment.jsp?appointmentId=<%= a.getAppointmentId() %>" style="font-weight: 700; color: var(--teal-700); text-decoration: none;">
+                                        <a href="<%= request.getContextPath() %>/doctor/treatment?appointmentId=<%= a.getAppointmentId() %>" style="font-weight: 700; color: var(--teal-700); text-decoration: none;">
                                             <%= a.getAppointmentNumber() %>
                                         </a>
                                     </td>
@@ -108,7 +108,7 @@
                                     <td><%= (a.getToothNumbers() != null && !a.getToothNumbers().isEmpty()) ? a.getToothNumbers() : "-" %></td>
                                     <td><span class="badge <%= badgeClass %>"><%= a.getStatus() %></span></td>
                                     <td style="text-align: right;">
-                                        <a href="<%= request.getContextPath() %>/doctor_treatment.jsp?appointmentId=<%= a.getAppointmentId() %>" class="btn btn-primary btn-sm">
+                                        <a href="<%= request.getContextPath() %>/doctor/treatment?appointmentId=<%= a.getAppointmentId() %>" class="btn btn-primary btn-sm">
                                             Treat Patient ➔
                                         </a>
                                     </td>
