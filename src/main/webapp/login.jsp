@@ -84,16 +84,7 @@
                 </button>
             </form>
 
-            <div class="demo-credentials">
-                <strong>🔑 Demo System Credentials (Password: <code>Admin@123</code>)</strong>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;">
-                    <div>• <strong>Admin:</strong> <code>admin</code></div>
-                    <div>• <strong>Reception:</strong> <code>reception</code></div>
-                    <div>• <strong>Doctor:</strong> <code>dr_kamal</code></div>
-                    <div>• <strong>Cashier:</strong> <code>cashier</code></div>
-                </div>
-            </div>
-        </div>
+          
 
         <div class="auth-footer">
             <p><%= AppConfig.CLINIC_ADDRESS %></p>

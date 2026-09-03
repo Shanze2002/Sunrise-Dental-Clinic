@@ -2,9 +2,7 @@ package com.sunrisedental.model;
 
 import java.io.Serializable;
 
-/**
- * JavaBean / DTO: Role
- */
+
 public class Role implements Serializable {
     private static final long serialVersionUID = 1L;
 
